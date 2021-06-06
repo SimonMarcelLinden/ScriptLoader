@@ -5,8 +5,7 @@
     "authors": [
         {
             "name": "Simon Marcel Linden",
-            "email": "info@snerve.de",
-            "homepage": "author homepage"
+            "email": "info@snerve.de"
         }
     ],
     "homepage": "https://github.com/simonmarcellinden/scriptloader",
