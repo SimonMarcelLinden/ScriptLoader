@@ -19,14 +19,42 @@ class ScriptLoader {
 
     public function load() {
         foreach ($this->styles as $style) {
-            $src = $style["src"];
-            echo "<link href='$src' rel='stylesheet'>";
+            $src    = $style["src"];
+            $option = $style['option'];
+            if( (is_array($option) && in_array("inline", $option))) {
+                // Search index of inline
+                $key = array_search('inline', $option);
+                // Remove inline from option array
+                array_splice($option, $key);
+                // Convert array to string
+                $option = implode(",", $option);
+
+                echo "<style rel='stylesheet' $option>" . $src . "</style>";
+            } elseif('inline' === $option) {
+                echo "<style rel='stylesheet'>" . $src . "</style>";
+            }
+            else {
+                echo "<link href='$src' rel='stylesheet' $option>";
+            }
         }
 
         foreach ($this->scripts as $script) {
             $src    = $script["src"];
             $option = $script['option'];
-            echo "<script src='$src' type='text/javascript' $option></script>";
+            if( (is_array($option) && in_array("inline", $option))) {
+                // Search index of inline
+                $key = array_search('inline', $option);
+                // Remove inline from option array
+                array_splice($option, $key);
+                // Convert array to string
+                $option = implode(",", $option);
+
+                echo "<script type='text/javascript' $option>" . $src . "</script>";
+            } elseif('inline' === $option) {
+                echo "<script type='text/javascript'>" . $src . "</script>";
+            } else {
+                echo "<script src='$src' type='text/javascript' $option></script>";
+            }
         }
     }
 
@@ -34,11 +62,11 @@ class ScriptLoader {
      * @param string $key
      * @param string|null $value
      * @param int $priority
-     * @param string|null $option
+     * @param string|array|null $option
      *
      * @return void
      */
-    public function set(string $key, string $value = null, int $priority = 1, string $option = null): void {
+    public function set(string $key, string $value = null, int $priority = 1, $option = null): void {
         $method = 'set'.ucfirst($key);
 
         if (method_exists($this, $method)) {
@@ -49,11 +77,11 @@ class ScriptLoader {
     /**
      * @param string $script
      * @param int $priority
-     * @param string|null $option
+     * @param string|array|null $option
      *
      * @return void
      */
-    private function setScript(string $script, int $priority, string $option = null): void {
+    private function setScript(string $script, int $priority, $option = null): void {
         $this->scripts[] = ['src' => $script, 'priority' => $priority, 'option' => $option];
         $this->sort($this->scripts);
     }
@@ -61,11 +89,11 @@ class ScriptLoader {
     /**
      * @param string $style
      * @param int $priority
-     * @param string|null $option
+     * @param string|array|null $option
      *
      * @return void
      */
-    private function setStyle(string $style, int $priority, string $option = null): void {
+    private function setStyle(string $style, int $priority, $option = null): void {
         $this->styles[] = ['src' => $style, 'priority' => $priority, 'option' => $option];
         $this->sort($this->styles);
     }
@@ -97,5 +125,7 @@ class ScriptLoader {
                 $j = -1;
             }
         }
+
+        $array = $tempArray;
     }
 }
