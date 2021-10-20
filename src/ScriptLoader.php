@@ -25,7 +25,7 @@ class ScriptLoader {
      * @return void
      */
     public function load($type = 'both'): void {
-        $type = ucfirst($type);
+        $type = strtolower($type);
         if (in_array($type, ['script', 'style', 'both'])) {
             if( $type == 'style' || $type == 'both') {
                 foreach ($this->styles as $style) {
