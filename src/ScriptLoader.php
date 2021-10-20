@@ -17,43 +17,57 @@ class ScriptLoader {
 
     }
 
-    public function load() {
-        foreach ($this->styles as $style) {
-            $src    = $style["src"];
-            $option = $style['option'];
-            if( (is_array($option) && in_array("inline", $option))) {
-                // Search index of inline
-                $key = array_search('inline', $option);
-                // Remove inline from option array
-                array_splice($option, $key);
-                // Convert array to string
-                $option = implode(",", $option);
+    /**
+     * @param string $type
+     * @description Integrates style sheets and scripts.
+     *              The parameter $ type ('script' | 'style' | 'both') can be used to control which output is generated.
+     *              The default is both.
+     * @return void
+     */
+    public function load($type = 'both'): void {
+        $type = ucfirst($type);
+        if (in_array($type, ['script', 'style', 'both'])) {
+            if( $type == 'style' || $type == 'both') {
+                foreach ($this->styles as $style) {
+                    $src    = $style["src"];
+                    $option = $style['option'];
+                    if( (is_array($option) && in_array("inline", $option))) {
+                        // Search index of inline
+                        $key = array_search('inline', $option);
+                        // Remove inline from option array
+                        array_splice($option, $key);
+                        // Convert array to string
+                        $option = implode(",", $option);
 
-                echo "<style rel='stylesheet' $option>" . $src . "</style>";
-            } elseif('inline' === $option) {
-                echo "<style rel='stylesheet'>" . $src . "</style>";
+                        echo "<style rel='stylesheet' $option>" . $src . "</style>";
+                    } elseif('inline' === $option) {
+                        echo "<style rel='stylesheet'>" . $src . "</style>";
+                    }
+                    else {
+                        echo "<link href='$src' rel='stylesheet' $option>";
+                    }
+                }
             }
-            else {
-                echo "<link href='$src' rel='stylesheet' $option>";
-            }
-        }
 
-        foreach ($this->scripts as $script) {
-            $src    = $script["src"];
-            $option = $script['option'];
-            if( (is_array($option) && in_array("inline", $option))) {
-                // Search index of inline
-                $key = array_search('inline', $option);
-                // Remove inline from option array
-                array_splice($option, $key);
-                // Convert array to string
-                $option = implode(",", $option);
+            if( $type == 'script' || $type == 'both')
+                foreach ($this->scripts as $script) {
+                    $src    = $script["src"];
+                    $option = $script['option'];
+                    if( (is_array($option) && in_array("inline", $option))) {
+                        // Search index of inline
+                        $key = array_search('inline', $option);
+                        // Remove inline from option array
+                        array_splice($option, $key);
+                        // Convert array to string
+                        $option = implode(",", $option);
 
-                echo "<script type='text/javascript' $option>" . $src . "</script>";
-            } elseif('inline' === $option) {
-                echo "<script type='text/javascript'>" . $src . "</script>";
-            } else {
-                echo "<script src='$src' type='text/javascript' $option></script>";
+                        echo "<script type='text/javascript' $option>" . $src . "</script>";
+                    } elseif('inline' === $option) {
+                        echo "<script type='text/javascript'>" . $src . "</script>";
+                    } else {
+                        echo "<script src='$src' type='text/javascript' $option></script>";
+                    }
+                }
             }
         }
     }
