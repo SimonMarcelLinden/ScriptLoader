@@ -49,7 +49,7 @@ class ScriptLoader {
                 }
             }
 
-            if( $type == 'script' || $type == 'both')
+            if( $type == 'script' || $type == 'both') {
                 foreach ($this->scripts as $script) {
                     $src    = $script["src"];
                     $option = $script['option'];
